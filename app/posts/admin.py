@@ -7,15 +7,18 @@ from posts.models import PostComment, Post, PostImage, PostLike
 class PostImageInline(admin.TabularInline):
     # model 이라는 것은 원래 가지고 있는 키워드 이다
     model = PostImage
+    extra = 1
 
 
 class PostCommentInline(admin.TabularInline):
     model = PostComment
+    extra = 1
 
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
     list_display = ('author', 'content', 'created')
+    list_display_links = ('author','content')
     inlines = [
         PostImageInline,
         PostCommentInline
