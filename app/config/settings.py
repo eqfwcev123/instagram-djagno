@@ -14,9 +14,22 @@ import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
+
+STATIC_URL = '/static/'
+# BASEDIR 는 Config 이다
+# os.path.dirname()은 한단계 위로 올라간다고 생각하면 된다.
+ROOT_DIR = os.path.dirname(BASE_DIR)
+# ROOT_ROOT_DIR = os.path.dirname(ROOT_DIR)
+# print('베이스 경로는: ', BASE_DIR)
+# print('루트경로는 : ', ROOT_DIR)
+# print('루트루트 경로는 : ', ROOT_ROOT_DIR)
+# instagram/.media/
+MEDIA_ROOT = os.path.join(ROOT_DIR, '.media')
+MEDIA_URL = '/media/'
+
+# HTTPSCHEME + HOST + /Media/ + File주소
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '9%65x8cg!9u2q)^#x++wg(d1usjjt!1imxbu_gj-e#e@&*!u7w'
@@ -113,10 +126,4 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
-
-STATIC_URL = '/static/'
-# BASEDIR 는 Config 이다
-ROOT_DIR = os.path.dirname(BASE_DIR)
-# instagram/.media/
-MEDIA_ROOT = os.path.join(ROOT_DIR, '.media')
 

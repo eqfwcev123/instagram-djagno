@@ -33,6 +33,7 @@ class PostImage(models.Model):
     # 소스코드에 사용될 정적 파일 : static
     # 소스코드에 사용되지 않을 정적 파일 : Media(git 에 올라가지 않을 파일을 만들어 두고 gitignore에 설정)
 
+
 class PostComment(models.Model):
     """
     각 포스트의 댓글(Many To One)
@@ -51,3 +52,8 @@ class PostLike(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     created_date = models.DateTimeField(auto_now_add=True)
+
+# Fk, MTM, OTO 를 할때 해당 필드가 어디에 있는지 생각해보자
+# author 는 사용자이면 user 테이블에 있을것이다.
+# post는 post 테이블에 있을 것이고 user 는 user 테이블에 있을 것이다.
+# 얀걀하고자 하는 데이터가 어디있을지 만 생각하면 쉽게 연결할 수 있다.
