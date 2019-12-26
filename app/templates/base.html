@@ -1,0 +1,19 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- 우리가 프로젝트 파일을 서버에 올리게 되면 나중에 static파일을 찾을때 다른 서버로 들어가서 static파일을 찾으려고한다. -->
+    <!-- 그렇기 때문에 아래 방식처럼 작성을 사용해야 한다.-->
+    <link rel="stylesheet" href="{% static 'bootstrap/bootstrap.css' %}">
+
+    {% block head %}
+    {% endblock %}
+</head>
+<body>
+    <div id="wrap">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

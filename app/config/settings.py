@@ -28,6 +28,9 @@ ROOT_DIR = os.path.dirname(BASE_DIR)
 # instagram/.media/
 MEDIA_ROOT = os.path.join(ROOT_DIR, '.media')
 MEDIA_URL = '/media/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static')
+]
 
 # HTTPSCHEME + HOST + /Media/ + File주소
 

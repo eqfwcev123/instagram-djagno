@@ -23,7 +23,7 @@ from config.views import index
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', index, name='index'),
-    path('members/', include('members.urls'))
+    path('members/', include('members.urls')),
 ]
 
 urlpatterns += static(

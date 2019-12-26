@@ -15,10 +15,12 @@ class PostCommentInline(admin.TabularInline):
     extra = 1
 
 
+# register(): used to register ModelAdmin classes.
+
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
     list_display = ('author', 'content', 'created')
-    list_display_links = ('author','content')
+    list_display_links = ('author', 'content')
     inlines = [
         PostImageInline,
         PostCommentInline
