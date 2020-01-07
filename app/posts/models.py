@@ -21,6 +21,7 @@ class Post(models.Model):
     def __str__(self):
         return f'author : {self.author}, content: {self.content}, like_user : {self.like_user}, created: {self.created}'
 
+
 class PostImage(models.Model):
     """
     각 포스트의 사진
