@@ -28,11 +28,13 @@ def post_like(request, pk):
 def post_create(request):
     if request.method == 'POST':
         user = request.user
-        image = request.FILES['image']
+        image = request.FILES.getlist('image')
         text = request.POST['text']
         post = Post.objects.create(author=user, content=text)
         # post.postimage_set.create(image=image)
-        PostImage.objects.create(post=post, image=image)
+        # PostImage.objects.create(post=post, image=image)
+        for f in image:
+            PostImage.objects.create(post=post, image=f)
         return redirect('posts:post-list')
     else:
         form = PostCreateForm()
