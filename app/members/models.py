@@ -8,4 +8,4 @@ class User(AbstractUser):
     사용자 모델로 쓰인다
     """
     img_profile = models.ImageField('프로필 이미지', blank=True, upload_to='users/')
-    pass
+    name = models.CharField(max_length=50)

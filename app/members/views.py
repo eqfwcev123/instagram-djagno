@@ -1,8 +1,10 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
-
 # Create your views here.
+from members.models import User
+
 
 def login_view(request):
     if request.method == 'POST':
@@ -34,3 +36,36 @@ def login_view(request):
             return redirect('members:login')
     else:
         return render(request, 'members/login.html')
+
+
+def signup_view(request):
+    username = request.POST['username']
+    email = request.POST['email']
+    name = request.POST['name']
+    password = request.POST['password']
+
+    if User.objects.filter(username=username).exists():
+        return HttpResponse("이미 사용중인 username/email 입니다")
+    if User.objects.filter(email=email).exists():
+        return HttpResponse("이미 사용중인 username/email 입니다")
+
+    # 아이디가 같은데 비번이 다를경우 create_user() 를 할때 username 충돌이 난다
+    # user = authenticate(username=username, password=password)
+    # if user:
+    #     return HttpResponse("이미 사용중인 username/email 입니다")
+    # else:
+    #     newuser = User.objects.create_user(username=username, email=email, name=name, password=password)
+    #     login(request, newuser)
+    #     return redirect('posts:post-list')
+
+    user = User.objects.create_user(username=username, email=email, name=name, password=password)
+    login(request, user)
+    return redirect('posts:post-list')
+
+
+def logout_view(request):
+    """
+    로그인 되어있는지 확인하고 로그인 되어있을 경우 logout() 시키기.
+    """
+    logout(request)
+    return redirect('members:login')

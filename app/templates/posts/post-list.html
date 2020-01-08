@@ -1,6 +1,13 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<div>User:{{request.user}}</div>
+<div>Authenticated:{{request.user.is_authenticated}}</div>
+{% if request.user.is_authenticated %}
+<div><a class="btn btn-danger"href="{% url 'members:post-logout' %}">로그아웃</a></div>
+{% else %}
+<div><a class="btn btn-primary"href="{% url 'members:login' %}">로그아웃</a></div>
+{% endif %}
 {% for post in posts %}
 <div class="card mb-5">
 <div>{{ post.author }}</div>
