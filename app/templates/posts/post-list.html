@@ -8,10 +8,17 @@
 {% else %}
 <div><a class="btn btn-primary"href="{% url 'members:login' %}">로그아웃</a></div>
 {% endif %}
+<div><a class="btn btn-primary" href="{% url 'posts:post-create' %}">포스트 작성</a> </div>
 {% for post in posts %}
 <div class="card mb-5">
-<div>{{ post.author }}</div>
-<div>{{ post.created }}</div>
+<div>작성자: {{ post.author }}</div>
+<div>작성 내용: {{ post.created }}</div>
+<div>글내용: {{post.content }}</div>
+<div>
+    {% for post_image in post.postimage_set.all %}
+    <img src="{{post_image.image.url}}">
+    {% endfor %}
+</div>
     <form method="POST" action="{% url 'posts:post-like' pk=post.pk %}">
     {% csrf_token %}
         {% if post in user.like_post_set.all %}
