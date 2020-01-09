@@ -139,5 +139,35 @@ def my_view(request):
 
 
 
-### Authentication views
+
+
+### Form
 ---
+Bound Form 와 unbound Form 의 차이
+- An unbound form has no data associated with it. When rendered to the user, it will be empty or will contain default values.
+- A bound form has submitted data, and hence can be used to tell if that data is valid. If an invalid bound form is rendered, it can include inline error messages telling the user what data to correct.
+(**bound data 는 사용자가 제출한 데이터가 있다. 사용자가 제출한 데이터가 있기 때문에 유효한 데이터이다.**)
+
+- is_valid() 함수를 이용해서 데이터가 valid/bounded 한지 알 수 있다
+- validated한 데이터는 form.cleaned_data 딕셔너리 안에 있다.
+
+```python
+if form.is_valid():
+    subject = form.cleaned_data['subject']
+    message = form.cleaned_data['message']
+    sender = form.cleaned_data['sender']
+    cc_myself = form.cleaned_data['cc_myself']
+# 이런식으로 valid 하면 form.cleand_data['필드명'] 내부에 데이터가 있다
+```
+
+###Form 에서의 widget class
+---
+각 form.Forms의 필드에는 widget class가 있는데, 이 widget class 가 html 의 `<input type='text'>` type=text 부분이다.
+
+A widget is Django’s representation of an HTML input element. The widget handles the rendering of the HTML, and the extraction of data from a GET/POST dictionary that corresponds to the widget
+
+### 템플릿에서 input이 아닌 다른 Form 요소 추가하기
+---
+{{form}}: input 태그 생성
+{{form.as_p}}: p태그 생성
+{{form.as_ul}}: li태그 생성

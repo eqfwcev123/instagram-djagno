@@ -26,7 +26,22 @@
         {% else %}
             <button type="submit" class="btn btn-danger">싫어요</button>
         {% endif %}
-</form>
+    </form>
+    <form method="POST" action="{% url 'posts:post-comment' post_pk=post.pk %}">
+        {% csrf_token %}
+        {{ commentform }}
+        <button type="submit" class="btn btn-primary">댓글 달기</button>
+    </form>
+    <div>
+    {% for comment in post.postcomment_set.all %}
+    <ul>
+        <li>
+            <b>{{comment.author.name}}</b>
+            <span>{{comment.content}}</span>
+        </li>
+    </ul>
+    {% endfor %}
+</div>
 </div>
 {% endfor %}
 {% endblock %}
