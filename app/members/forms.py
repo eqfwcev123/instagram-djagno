@@ -1,12 +1,14 @@
 from django import forms
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, login
+from django.core.exceptions import ValidationError
 from django.http import HttpResponse
+from django.shortcuts import render
 
 from members.models import User
 
 
 class LoginForm(forms.Form):
-    usernmae = forms.CharField(label='username', widget=forms.TextInput(
+    username = forms.CharField(label='username', widget=forms.TextInput(
         attrs={
             'class': 'form-control',
             'placeholder': '아이디'
@@ -18,6 +20,23 @@ class LoginForm(forms.Form):
             'placeholder': '비밀번호'
         }
     ))
+
+    def login(self, request):
+        username = self.cleaned_data['username']
+        password = self.cleaned_data['password']
+        user = authenticate(request, username=username, password=password)
+        login(request, user)
+
+    def clean(self):
+
+        # Form.clean 에서는 cleaned_data 에 접근할 수 있다.
+        # clean_data 에는 이 Form이 가진 모든 필드들에서 리턴된 데이터가 key:value 형식으로 저장되어 있다
+        username = self.cleaned_data['username']
+        password = self.cleaned_data['password']
+        user = authenticate(username=username,password=password)
+        if not user:
+            raise ValidationError("username 또는 password 가 이미 존재합니다")
+        return self.cleaned_data
 
 
 class SignupForm(forms.Form):
