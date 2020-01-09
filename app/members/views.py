@@ -9,19 +9,13 @@ from members.models import User
 
 def login_view(request):
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
-        print(request.user.is_authenticated)
-        # authenticate 는 사용자가 존재하는지만 확인
-        if user:
-            login(request, user)
-            # 여기서 부터 set-cookie 에 관한 내용을 사용해야한다.
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            form.login(request)
             return redirect('posts:post-list')
-        else:
-            # members의 urls.py 안에 있는 app_name:url패턴 이름
-            return redirect('members:login')
-    form = LoginForm()
+    else:
+        form = LoginForm()
+
     context = {
         'form': form
     }
@@ -37,10 +31,10 @@ def signup_view(request):
     # 인덱스 에서 사용자가 작성한 데이터가 여기로온다
     form = SignupForm(data=request.POST)
     if form.is_valid():  # True
-        form.clean()
-        user = User.objects.get(username=username)
-        login(request, user)
-    return redirect('posts:post-list')
+        # form.clean()
+        # user = User.objects.get(username=username)
+        # login(request, user)
+        return redirect('posts:post-list')
 
 
 def logout_view(request):
