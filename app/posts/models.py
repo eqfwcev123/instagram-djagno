@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+import re
 
 # Create your models here.
 from members.models import User
@@ -13,13 +14,23 @@ class Post(models.Model):
     # 그렇기 때문에 두 필드를 구분해줘야 한다.
     # 쉽게 말하면 User.post_set.메소드() 를 하면 author를 의미하는건지, like_user를 의미하는건지 알 수 없다. 그렇기 때문에 related_name
     # 을 적어줘야햔다.
+    TAG_PATTERN = re.compile(r'#(\w+)')
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField(blank=True)
     like_user = models.ManyToManyField(User, through='PostLike', related_name='like_post_set')
     created = models.DateTimeField(auto_now_add=True)
+    tags = models.ManyToManyField("Tag", verbose_name="해시태그 목록",
+                                  related_name="posts", blank=True)  # 포스트 한개에 여러개의 해쉬태그를 갖을 수 있고 그반대가 될 수 있다
 
     def __str__(self):
         return f'author : {self.author}, content: {self.content}, like_user : {self.like_user}, created: {self.created}'
+
+    def __save__(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        tag_name_list = re.findall(self.TAG_PATTERN, self.content)
+
+        tags = [Tag.objects.get_or_create(name=tag_name)[0] for tag_name in tag_name_list]
+        self.tags.set(tags)
 
 
 class PostImage(models.Model):
@@ -56,7 +67,21 @@ class PostLike(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     created_date = models.DateTimeField(auto_now_add=True)
 
+
 # Fk, MTM, OTO 를 할때 해당 필드가 어디에 있는지 생각해보자
 # author 는 사용자이면 user 테이블에 있을것이다.
 # post는 post 테이블에 있을 것이고 user 는 user 테이블에 있을 것이다.
 # 얀걀하고자 하는 데이터가 어디있을지 만 생각하면 쉽게 연결할 수 있다.
+
+class Tag(models.Model):
+    """
+    Hash태그의 태그를 담당
+    Post 입장에서 post.tags.all()로 연결된 전체 TAG를 불러올 수 있어야 한다
+    Tag 입장에서 tag.post.all()로 연결된 전체 POST를 불러와야 한다
+
+    Django admin 에서 결과를 볼 수 있도록 admin.py 를 설정
+    """
+    name = models.CharField('태그명', max_length=150)
+
+    def __str__(self):
+        return self.name

@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/index.css' %}">
+{% endblock %}
+{% block content %}
+<div class="container-fluid">
+        <div class="mr-auto ml-auto mt-3
+                    col-lg-4
+                    col-md-6
+                    col-sm-8
+                    col-10">
+            <div class="card text-center p-4">
+                <div>{{ request.user }}</div>
+                <div>{{ request.user.is_authenticated }}</div>
+
+                <h1>Instagram</h1>
+                <p class="text-secondary">친구들의 사진과 동영상을 보려면 가입하세요</p>
+                <button class="btn btn-primary btn-block">Facebook으로 로그인</button>
+                <hr>
+                <form action="{% url 'signup' %}" method="POST">
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <div class="form-group">
+                            {{ field }}
+                        </div>
+                        {% if field.errors %}
+                            <ul class="list-unstyled text-danger text-left mt-0 pt-0" style="margin-top: -15px !important;">
+                                {% for error in field.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if form.non_field_errors %}
+                        <ul class="list-unstyled text-danger">
+                            {% for error in form.non_field_errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+
+                    <button type="submit" class="btn btn-primary btn-block">가입</button>
+                </form>
+                <p class="text-secondary">가입하면 Instagram의 약관 데이터 정책 및 쿠키 정책에 동의하게 됩니다</p>
+            </div>
+
+            <div class="card text-center p-4 mt-3 mb-3">
+                <span>계정이 있으신가요?</span>
+                <a href="{% url 'members:login' %}">로그인</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

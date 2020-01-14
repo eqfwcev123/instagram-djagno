@@ -1,4 +1,7 @@
+from datetime import datetime
+
 from django.contrib.auth import authenticate, login, logout
+from django.forms import formset_factory
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
@@ -11,9 +14,11 @@ def login_view(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
+            # is_valid() 이후에 self.cleaned_data 가 반환되었다
             form.login(request)
             return redirect('posts:post-list')
     else:
+        # GET을 할때는 form 형식만 보내주면 되기 때문에 LoginForm 내부에 request.POST를 안넣어 줘도 된다.
         form = LoginForm()
 
     context = {
@@ -23,18 +28,22 @@ def login_view(request):
 
 
 def signup_view(request):
-    email = request.POST['email']
-    username = request.POST['username']
-    name = request.POST['name']
-    password = request.POST['password']
+    # POST 로 접근했을때
+    if request.method == 'POST':
+        form = SignupForm(request.POST)  # 사용자가 입력한 데이터가 옴
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('posts:post-list')
 
-    # 인덱스 에서 사용자가 작성한 데이터가 여기로온다
-    form = SignupForm(data=request.POST)
-    if form.is_valid():  # True
-        # form.clean()
-        # user = User.objects.get(username=username)
-        # login(request, user)
-        return redirect('posts:post-list')
+    # GET 으로 로그인 했을때
+    else:
+        form = SignupForm()
+
+        context = {
+            'form': form,
+        }
+        return render(request, 'members/signup.html', context)
 
 
 def logout_view(request):
