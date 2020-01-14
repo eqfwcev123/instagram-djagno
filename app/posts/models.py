@@ -17,6 +17,7 @@ class Post(models.Model):
     TAG_PATTERN = re.compile(r'#(\w+)')
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField(blank=True)
+    content_html = models.TextField(blank=True)
     like_user = models.ManyToManyField(User, through='PostLike', related_name='like_post_set')
     created = models.DateTimeField(auto_now_add=True)
     tags = models.ManyToManyField("Tag", verbose_name="해시태그 목록",
@@ -25,10 +26,19 @@ class Post(models.Model):
     def __str__(self):
         return f'author : {self.author}, content: {self.content}, like_user : {self.like_user}, created: {self.created}'
 
-    def __save__(self, *args, **kwargs):
+    def save(self, *args, **kwargs):
+        self._save_html(self)
         super().save(*args, **kwargs)
-        tag_name_list = re.findall(self.TAG_PATTERN, self.content)
+        self._save_tags(self)
 
+    def _save_html(self):
+        # 자신의 content html 에
+        # python -> <a href="#Python">#Python</a>
+        # 로 변환된 문자열을 저장
+        self.content_html = re.sub(self.TAG_PATTERN, r'<a href="/explore/tags/\g<1>/">#\g<1></a>', self.content)
+
+    def _save_tags(self):
+        tag_name_list = re.findall(self.TAG_PATTERN, self.content)
         tags = [Tag.objects.get_or_create(name=tag_name)[0] for tag_name in tag_name_list]
         self.tags.set(tags)
 
