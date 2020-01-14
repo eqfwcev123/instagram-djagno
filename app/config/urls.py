@@ -18,12 +18,14 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from members.views import signup_view
+from posts.views import post_list_by_tag
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', signup_view, name='signup'),
     path('members/', include('members.urls')),
-    path('posts/', include('posts.urls'))
+    path('posts/', include('posts.urls')),
+    path('explore/tags/<str:tag>/', post_list_by_tag, name='post-list-by-tag')
 ]
 
 urlpatterns += static(

@@ -27,9 +27,9 @@ class Post(models.Model):
         return f'author : {self.author}, content: {self.content}, like_user : {self.like_user}, created: {self.created}'
 
     def save(self, *args, **kwargs):
-        self._save_html(self)
+        self._save_html()
         super().save(*args, **kwargs)
-        self._save_tags(self)
+        self._save_tags()
 
     def _save_html(self):
         # 자신의 content html 에

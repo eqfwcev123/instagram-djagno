@@ -5,7 +5,7 @@ from posts.forms import PostCreateForm, PostCommentCreateForm
 from posts.models import Post, PostLike, PostImage, PostComment
 
 
-def post_list(request):
+def post_list(request, tag=None):
     form = PostCommentCreateForm()
     posts = Post.objects.all().order_by('-pk')
     context = {
@@ -25,6 +25,21 @@ def post_like(request, pk):
     else:
         PostLike.objects.create(post=post, user=user)
         return redirect('posts:post-list')
+
+
+def post_list_by_tag(request, tag):
+    # URL:/explore/tags/<tag문자열>/
+    # TEMPLATE: /posts/post-list.html
+    # <tag문자열>인 Tag를 자신 (post).tags에 가지고 있는 경우인 post목록만 돌려줘야 한다.
+    # 이 내용 이외에는 위의 Post_list 내용과 동일
+
+    post = Post.objects.filter(tags__name__iexact=tag).order_by('-pk')
+    form = PostCommentCreateForm()
+    context = {
+        'commentform': form,
+        'posts': post
+    }
+    return render(request, 'posts/post-list.html', context)
 
 
 def post_create(request):
@@ -58,4 +73,3 @@ def comment_create(request, post_pk):
             # 위 코드와 동일
             form.save(post=post, author=user)
         return redirect('posts:post-list')
-
