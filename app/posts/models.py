@@ -14,7 +14,7 @@ class Post(models.Model):
     # 그렇기 때문에 두 필드를 구분해줘야 한다.
     # 쉽게 말하면 User.post_set.메소드() 를 하면 author를 의미하는건지, like_user를 의미하는건지 알 수 없다. 그렇기 때문에 related_name
     # 을 적어줘야햔다.
-    TAG_PATTERN = re.compile(r'#(\w+)')
+    TAG_PATTERN = re.compile(r'#(\w+)')  # Compile a regular expression pattern into a regular expression object
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField(blank=True)
     content_html = models.TextField(blank=True)
@@ -22,6 +22,11 @@ class Post(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     tags = models.ManyToManyField("Tag", verbose_name="해시태그 목록",
                                   related_name="posts", blank=True)  # 포스트 한개에 여러개의 해쉬태그를 갖을 수 있고 그반대가 될 수 있다
+
+    # class Model(**kwargs)
+    # **kwargs are the names of the fields we have defined on our model.
+    # note that instantiating a model in no way touches our database. To touch the database
+    # we have to use save()
 
     def __str__(self):
         return f'author : {self.author}, content: {self.content}, like_user : {self.like_user}, created: {self.created}'
