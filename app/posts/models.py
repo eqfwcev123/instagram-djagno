@@ -6,6 +6,10 @@ import re
 from members.models import User
 
 
+# """Many To One"""
+# """Many To Many"""
+
+
 class Post(models.Model):
     """
     인스타그램 포스트
@@ -15,11 +19,12 @@ class Post(models.Model):
     # 쉽게 말하면 User.post_set.메소드() 를 하면 author를 의미하는건지, like_user를 의미하는건지 알 수 없다. 그렇기 때문에 related_name
     # 을 적어줘야햔다.
     TAG_PATTERN = re.compile(r'#(\w+)')  # Compile a regular expression pattern into a regular expression object
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)  # Many post by one user
     content = models.TextField(blank=True)
     content_html = models.TextField(blank=True)
     like_user = models.ManyToManyField(User, through='PostLike', related_name='like_post_set')
     created = models.DateTimeField(auto_now_add=True)
+    # through를 지정하지 않았기 때문에 posts_post_tag가 생성된다. 중간 테이블역할을 한다.
     tags = models.ManyToManyField("Tag", verbose_name="해시태그 목록",
                                   related_name="posts", blank=True)  # 포스트 한개에 여러개의 해쉬태그를 갖을 수 있고 그반대가 될 수 있다
 
@@ -53,7 +58,7 @@ class PostImage(models.Model):
     각 포스트의 사진
     """
     # Post 가 사라지면 이미지도 사라져야 하기 때문에 User 가 아닌 Post 랑 연결 해야한다.
-    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)  # Many PostImage to one post
     # 파일을 업로드 하면 자동으로 해당 경로로 파일을 업로드 하게 만들기.
     image = models.ImageField(upload_to='posts/images')
 
@@ -78,8 +83,8 @@ class PostLike(models.Model):
     Many-To-Many 필드를 중간 모델(Intermediate model)을 거쳐 사용.
     언제 생성 되었는지를 extra field 로 지정
     """
-    post = models.ForeignKey(Post, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)  # many postLike to one post
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  # many postLike by one user
     created_date = models.DateTimeField(auto_now_add=True)
 
 

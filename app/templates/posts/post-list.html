@@ -13,6 +13,7 @@
 <div class="card mb-5">
 <div>작성자: {{ post.author }}</div>
 <div>작성 내용: {{ post.created }}</div>
+<div>아이디:{{post.id}}</div>
 <div>글내용: {{post.content_html|safe }}</div>
 <div>
     {% for post_image in post.postimage_set.all %}
