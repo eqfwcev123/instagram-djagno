@@ -30,20 +30,18 @@ def login_view(request):
 def signup_view(request):
     # POST 로 접근했을때
     if request.method == 'POST':
-        form = SignupForm(request.POST)  # 사용자가 입력한 데이터가 옴
+        form = SignupForm(request.POST)
         if form.is_valid():
             user = form.save()
             login(request, user)
             return redirect('posts:post-list')
-
-    # GET 으로 로그인 했을때
     else:
         form = SignupForm()
 
-        context = {
-            'form': form,
-        }
-        return render(request, 'members/signup.html', context)
+    context = {
+        'form': form,
+    }
+    return render(request, 'members/signup.html', context)
 
 
 def logout_view(request):
