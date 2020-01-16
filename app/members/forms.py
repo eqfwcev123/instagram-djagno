@@ -40,30 +40,50 @@ class LoginForm(forms.Form):
 
 
 class SignupForm(forms.Form):
-    name = forms.CharField(max_length=250, widget=forms.TextInput(
-        attrs={
-            'class': 'form-control',
-            'placeholder': '이름'
-        }
-    ))
-    email = forms.EmailField(widget=forms.EmailInput(
-        attrs={
-            'class': 'form-control',
-            'placeholder': '이메일'
-        }
-    ))
-    username = forms.CharField(max_length=250, widget=forms.TextInput(
-        attrs={
-            'class': 'form-control',
-            'placeholder': '사용자 ID'
-        }
-    ))
-    password = forms.CharField(max_length=250, widget=forms.PasswordInput(
-        attrs={
-            'class': 'form-control',
-            'placeholder': '비밀번호'
-        }
-    ))
+    email = forms.EmailField(
+        widget=forms.EmailInput(
+            attrs={
+                'class': 'form-control',
+                'placeholder': '이메일',
+            }
+        )
+    )
+    name = forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                'class': 'form-control',
+                'placeholder': '이름',
+            }
+        )
+    )
+    username = forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                'class': 'form-control',
+                'placeholder': '사용자명',
+            }
+        )
+    )
+    password = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={
+                'class': 'form-control',
+                'placeholder': '비밀번호',
+            }
+        )
+    )
+
+    def clean_username(self):
+        username = self.cleaned_data['username']
+        if User.objects.filter(username=username).exists():
+            raise ValidationError('이미 사용중인 username입니다')
+        return username
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        if User.objects.filter(email=email).exists():
+            raise ValidationError('이미 사용중인 email입니다')
+        return email
 
     # 유효한 이메일 과 아이디인지 확인한다
     # form.non_field_errors 는 에러가 정확히 어떤 필드에서 나는지 모르기 때문에
@@ -80,21 +100,13 @@ class SignupForm(forms.Form):
     #     return self.cleaned_data
 
     def save(self):
-        # 사용자가 보낸 데이터
-        username = self.cleaned_data['username']
-        password = self.cleaned_data['password']
-        email = self.cleaned_data['email']
-        name = self.cleaned_data['name']
-        User.objects.create(username=username, password=password, email=email, name=name)
-
-    def clean_username(self):
-        clean_username = self.cleaned_data['username']
-        if User.objects.filter(username=clean_username).exists():
-            raise forms.ValidationError("이미 사용중인 username입니다")
-        return clean_username
-
-    def clean_email(self):
-        clean_email = self.cleaned_data['email']
-        if User.objects.filter(email=clean_email).exists():
-            raise forms.ValidationError("이미 사용중인 email입니다")
-        return clean_email
+        """
+        Form으로 전달받은 데이터를 사용해서
+        새로운 User를 생성하고 리턴
+        """
+        return User.objects.create_user(
+            username=self.cleaned_data['username'],
+            email=self.cleaned_data['email'],
+            password=self.cleaned_data['password'],
+            name=self.cleaned_data['name'],
+        )
