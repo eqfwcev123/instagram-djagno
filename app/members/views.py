@@ -34,7 +34,6 @@ def login_view(request):
         base=login_base_url,
         params='&'.join([f'{key}={value}' for key, value in login_params.items()])
     )
-    print('유알엘은 : ', login_url)
 
     context = {
         'form': form,
