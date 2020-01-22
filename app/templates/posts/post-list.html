@@ -4,28 +4,28 @@
 <div>User:{{request.user}}</div>
 <div>Authenticated:{{request.user.is_authenticated}}</div>
 {% if request.user.is_authenticated %}
-<div><a class="btn btn-danger"href="{% url 'members:post-logout' %}">로그아웃</a></div>
+<div><a class="btn btn-danger" href="{% url 'members:post-logout' %}">로그아웃</a></div>
 {% else %}
-<div><a class="btn btn-primary"href="{% url 'members:login' %}">로그아웃</a></div>
+<div><a class="btn btn-primary" href="{% url 'members:login' %}">로그아웃</a></div>
 {% endif %}
-<div><a class="btn btn-primary" href="{% url 'posts:post-create' %}">포스트 작성</a> </div>
+<div><a class="btn btn-primary" href="{% url 'posts:post-create' %}">포스트 작성</a></div>
 {% for post in posts %}
 <div class="card mb-5">
-<div>작성자: {{ post.author }}</div>
-<div>작성 내용: {{ post.created }}</div>
-<div>아이디:{{post.id}}</div>
-<div>글내용: {{post.content_html|safe }}</div>
-<div>
-    {% for post_image in post.postimage_set.all %}
-    <img src="{{post_image.image.url}}">
-    {% endfor %}
-</div>
+    <div>작성자: {{ post.author }}</div>
+    <div>작성 내용: {{ post.created }}</div>
+    <div>아이디:{{post.id}}</div>
+    <div>글내용: {{post.content_html|safe }}</div>
+    <div>
+        {% for post_image in post.postimage_set.all %}
+        <img src="{{post_image.image.url}}">
+        {% endfor %}
+    </div>
     <form method="POST" action="{% url 'posts:post-like' pk=post.pk %}">
-    {% csrf_token %}
+        {% csrf_token %}
         {% if post in user.like_post_set.all %}
-            <button type="submit" class="btn btn-primary">좋아요</button>
+        <button type="submit" class="btn btn-primary">좋아요</button>
         {% else %}
-            <button type="submit" class="btn btn-danger">싫어요</button>
+        <button type="submit" class="btn btn-danger">싫어요</button>
         {% endif %}
     </form>
     <form method="POST" action="{% url 'posts:post-comment' post_pk=post.pk %}">
@@ -34,15 +34,15 @@
         <button type="submit" class="btn btn-primary">댓글 달기</button>
     </form>
     <div>
-    {% for comment in post.postcomment_set.all %}
-    <ul>
-        <li>
-            <b>{{comment.author.name}}</b>
-            <span>{{comment.content}}</span>
-        </li>
-    </ul>
-    {% endfor %}
-</div>
+        {% for comment in post.postcomment_set.all %}
+        <ul>
+            <li>
+                <b>{{comment.author.name}}</b>
+                <span>{{comment.content}}</span>
+            </li>
+        </ul>
+        {% endfor %}
+    </div>
 </div>
 {% endfor %}
 {% endblock %}
