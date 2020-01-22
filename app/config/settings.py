@@ -48,6 +48,7 @@ ALLOWED_HOSTS = [
 ]
 AUTH_USER_MODEL = 'members.User'
 
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 AWS_ACCESS_KEY_ID = ""
 AWS_SECRET_ACCES_KEY = ""
 AWS_STORAGE_BUCKET_NAME = "wps-instagram-ldh2"
