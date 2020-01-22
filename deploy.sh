@@ -27,6 +27,9 @@ ${SSH_CMD} mkdir -p ${DEST_SOURCE}
 scp -q -i "${IDENTITY_FILE}" -r "${ORIGIN_SOURCE}" ${HOST}:${DEST_SOURCE}
 # scp -i ~/.ssh/wps12th.pem -r ~/projects/wps12th/instagram ubuntu@54.180.119.84:/home/ubuntu/projects/
 
+echo "pip3 requirements 설치"
+${SSH_CMD} pip3 install -q -r /home/ubuntu/projects/instagram/requirements.txt
+
 # 실행 중이던 screen 종료
 # ssh -i ~/.ssh/wps12th.pem ubuntu@54.180.119.84 -C "screen -X -S runserver quit"
 ${SSH_CMD} -C "screen -X -S runserver quit"
