@@ -1,15 +1,20 @@
-import urllib
-from datetime import datetime
+import json
+import os
 
 import requests
-from django.contrib.auth import authenticate, login, logout
-from django.forms import formset_factory
-from django.http import HttpResponse
+from django.contrib.auth import login, logout
 from django.shortcuts import render, redirect
 
-# Create your views here.
+from config.settings import ROOT_DIR
 from members.forms import SignupForm, LoginForm
 from members.models import User
+
+# Create your views here.
+
+
+JSON_FILE = os.path.join(ROOT_DIR, 'secrets.json')
+JSON_DATA = open(JSON_FILE)
+JSON_DATA_OBJECT = json.load(JSON_DATA)
 
 
 def login_view(request):
@@ -26,7 +31,7 @@ def login_view(request):
     login_base_url = 'https://nid.naver.com/oauth2.0/authorize'
     login_params = {
         'response_type': 'code',
-        'client_id': 'DTs2e7pHYcuPAmfCI7Kg',
+        'client_id': f'{JSON_DATA_OBJECT["NAVER_CLIENT_ID"]}',
         'redirect_url': 'http://localhost:8000/members/naver-login/',
         'state': 'RANDOM_STATE',
     }
@@ -75,8 +80,8 @@ def naver_login(request):
     login_base_url = "https://nid.naver.com/oauth2.0/token"
     login_params = {
         'grant_type': 'authorization_code',
-        'client_id': 'DTs2e7pHYcuPAmfCI7Kg',
-        'client_secret': '8ZtHtnt7B9',
+        'client_id': f'{JSON_DATA_OBJECT["NAVER_CLIENT_ID"]}',
+        'client_secret': f'{JSON_DATA_OBJECT["NAVER_CLIENT_SECRET"]}',
         'redirect_url': 'http://localhost:8000/members/naver-login/',
         'code': request.GET['code'],
         'state': request.GET['state'],
