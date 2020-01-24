@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/2.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
-
+import json
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -48,9 +48,18 @@ ALLOWED_HOSTS = [
 ]
 AUTH_USER_MODEL = 'members.User'
 
+JSON_FILE = os.path.join(ROOT_DIR, 'secrets.json')
+print('제이슨 파일: ', JSON_FILE)
+JSON_DATA = open(JSON_FILE)
+print('제이슨 데이터:', JSON_DATA)
+print('제이슽 데이터 타입 :', type(JSON_DATA))
+JSON_DATA_OBJECT = json.load(JSON_DATA)  # 딕셔너리형 데이터를 가지고 온다
+JSON_DATA_STRING = json.dumps(JSON_DATA_OBJECT)  # 문자열 형 데이터를 가지고 온다
+# JSON_DATA_STRING = JSON_DATA.dumps(JSON_FILE)
+
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-AWS_ACCESS_KEY_ID = ""
-AWS_SECRET_ACCES_KEY = ""
+AWS_ACCESS_KEY_ID = f"{JSON_DATA_OBJECT['AWS_ACCESS_KEY_ID']}"
+AWS_SECRET_ACCESS_KEY = f"{JSON_DATA_OBJECT['AWS_SECRET_ACCESS_KEY']}"
 AWS_STORAGE_BUCKET_NAME = "wps-instagram-ldh2"
 AWS_AUTO_CREATE_BUCKET = True
 AWS_S3_REGION_NAME = "ap-northeast-2"
@@ -106,8 +115,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'instagram',
-        'USER': 'ldh',
-        'PASSWORD': 'a1s2d3f4',
+        'USER': f"{JSON_DATA_OBJECT['POSTGRESQL_USER']}",
+        'PASSWORD': f"{JSON_DATA_OBJECT['POSTGRESQL_PASSWORD']}",
         'HOST': 'wps12th-ldh.cninfzt6utzi.ap-northeast-2.rds.amazonaws.com',
         'PORT': 5432
     }
