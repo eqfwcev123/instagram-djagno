@@ -7,6 +7,11 @@ RUN     apt -y update && apt -y dist-upgrade
 COPY    ./requirements.txt /tmp/
 RUN     pip install -r /tmp/requirements.txt
 
+# reqwuirements를  /tmp에 복사후, pip install 실행
+COPY    ./.requirements/base.txt /tmp/
+COPY    ./.requirements/production.txt /tmp/
+RUN     pip install -r /tmp/production.txt
+
 # 소스코드 복사후 runserver
 COPY . /srv/instagram
 WORKDIR /srv/instagram/app
