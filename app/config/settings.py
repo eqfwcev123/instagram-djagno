@@ -49,19 +49,21 @@ ALLOWED_HOSTS = [
 AUTH_USER_MODEL = 'members.User'
 
 JSON_FILE = os.path.join(ROOT_DIR, 'secrets.json')
-print('제이슨 파일: ', JSON_FILE)
+# print('제이슨 파일: ', JSON_FILE)
 JSON_DATA = open(JSON_FILE)
-print('제이슨 데이터:', JSON_DATA)
-print('제이슽 데이터 타입 :', type(JSON_DATA))
+# print('제이슨 데이터:', JSON_DATA)
+# print('제이슽 데이터 타입 :', type(JSON_DATA))
 JSON_DATA_OBJECT = json.load(JSON_DATA)  # 딕셔너리형 데이터를 가지고 온다
 JSON_DATA_STRING = json.dumps(JSON_DATA_OBJECT)  # 문자열 형 데이터를 가지고 온다
 # JSON_DATA_STRING = JSON_DATA.dumps(JSON_FILE)
 
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-AWS_ACCESS_KEY_ID = f"{JSON_DATA_OBJECT['AWS_ACCESS_KEY_ID']}"
-AWS_SECRET_ACCESS_KEY = f"{JSON_DATA_OBJECT['AWS_SECRET_ACCESS_KEY']}"
-AWS_STORAGE_BUCKET_NAME = "wps-instagram-ldh2"
-AWS_AUTO_CREATE_BUCKET = True
+
+# Boto3 와 S3Boto3Storage 사용
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'  # 미디어/정적파일을 S3에 올리게 하기 설정
+AWS_ACCESS_KEY_ID = f"{JSON_DATA_OBJECT['AWS_ACCESS_KEY_ID']}"  # Boto3를 사용하기 위한 인증
+AWS_SECRET_ACCESS_KEY = f"{JSON_DATA_OBJECT['AWS_SECRET_ACCESS_KEY']}"  # Boto3를 사용하기 위한 인증
+AWS_STORAGE_BUCKET_NAME = "wps-instagram-ldh2"  # 미디어/정적파일을 S3에 올리게 하기 설정
+AWS_AUTO_CREATE_BUCKET = True  # True일 경우 AWS_STORAGE_BUCKET_NAME 에 지정되어 있는 bucket을 자동 생성한다
 AWS_S3_REGION_NAME = "ap-northeast-2"
 
 # Application definition
