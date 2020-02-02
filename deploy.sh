@@ -1,9 +1,15 @@
 #!/usr/bin/env sh
 IDENTITY_FILE="$HOME/.ssh/wpsNkp.pem"
-HOST="ubuntu@13.209.65.54"
-ORIGIN_SOURCE="$HOME/projects/wps12th/instagram"
+HOST="ubuntu@15.164.228.223"
+ORIGIN_SOURCE="$HOME/projects/wps12th/instagram" # 여기의 origin source 는 hoste OS의 프로젝트 경로이다
 DEST_SOURCE="/home/ubuntu/projects/"
 SSH_CMD="ssh -i ${IDENTITY_FILE} ${HOST}"
+
+#### 노트 ####
+# ~ 와 $HOME 은 동일하다
+# home/ubuntu 는 내컴퓨터의 ~ 와 동일하다
+############
+
 
 
 # 숙제
@@ -12,9 +18,17 @@ SSH_CMD="ssh -i ${IDENTITY_FILE} ${HOST}"
 
 
 echo "====Runserver 배포===="
+echo "apt update & upgrade & autoremove"
+${SSH_CMD} -C 'sudo apt update && sudo DEBIAN_FRONTEND=noninteractive apt dist-upgrade -y && apt -y autoremove'
+echo "apt install python3-pip"
+${SSH_CMD} -C 'sudo apt -y install python3-pip'
 
+
+# pip freeze
 echo "pip freeze"
-"$HOME"/.pyenv/versions/wps-instagram-env/bin/pip freeze > "$HOME"/projects/wps12th/instagram/requirements.txt
+"$HOME"/.pyenv/versions/3.7.5/envs/wps-instagram/bin/pip freeze > "$HOME"/projects/fastcampus/12th/instagram/requirements.txt
+
+
 
 echo "기존 폴더 삭제"
 #기존 폴더 삭제
