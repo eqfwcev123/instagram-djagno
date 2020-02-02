@@ -13,14 +13,23 @@ import json
 import os
 
 import boto3
+from django_secrets import SECRETS
 
-secret_name = 'wps'
+access_key = os.environ.get('AWS_SECRETS_MANAGER_ACCESS_KEY_ID')
+secret_key = os.environ.get('AWS_SECRETS_MANAGER_SECRET_ACCESS_KEY')
+
 region_name = 'ap-northeast-2'
 
-session = boto3.session.Session(
-    profile_name='wps-secrets-manager2',
-    region_name=region_name
-)
+session_kwargs = {
+    'region_name': region_name
+}
+
+if access_key and secret_key:
+    session_kwargs['aws_access_key_id'] = access_key
+    session_kwargs['aws_secret_access_key'] = secret_key
+else:
+    session_kwargs['profile_name'] = 'wps-secrets-manager'
+session = boto3.session.Session(**session_kwargs)
 
 client = session.client(
     service_name='secretsmanager',  # AWS에 있는 SecretsManager사용
@@ -28,7 +37,8 @@ client = session.client(
 )
 secret_string = client.get_secret_value(SecretId='wps')['SecretString']
 secret_data = json.loads(secret_string)  # 파이썬 딕셔너리로 변환
-secrets = secret_data['instagram']
+SECRETS = secret_data['instagram']
+
 
 # AWS_SECRETS_MANAGER_SECRETS_NAME = 'wps'
 # AWS_SECRETS_MANAGER_SECRETS_SECTION = 'instagram'
@@ -82,8 +92,8 @@ AUTH_USER_MODEL = 'members.User'
 
 # Boto3 와 S3Boto3Storage 사용
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'  # 미디어/정적파일을 S3에 올리게 하기 설정
-AWS_ACCESS_KEY_ID = secrets['AWS_ACCESS_KEY_ID']  # Boto3를 사용하기 위한 인증
-AWS_SECRET_ACCESS_KEY = secrets['AWS_SECRET_ACCESS_KEY']  # Boto3를 사용하기 위한 인증
+AWS_ACCESS_KEY_ID = SECRETS['AWS_ACCESS_KEY_ID']  # Boto3를 사용하기 위한 인증
+AWS_SECRET_ACCESS_KEY = SECRETS['AWS_SECRET_ACCESS_KEY']  # Boto3를 사용하기 위한 인증
 AWS_STORAGE_BUCKET_NAME = "wps-instagram-ldh2"  # 미디어/정적파일을 S3에 올리게 하기 설정
 AWS_AUTO_CREATE_BUCKET = True  # True일 경우 AWS_STORAGE_BUCKET_NAME 에 지정되어 있는 bucket을 자동 생성한다
 AWS_S3_REGION_NAME = "ap-northeast-2"
@@ -139,8 +149,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'instagram',
-        'USER': secrets['POSTGRESQL_USER'],
-        'PASSWORD': secrets['POSTGRESQL_PASSWORD'],
+        'USER': SECRETS['POSTGRESQL_USER'],
+        'PASSWORD': SECRETS['POSTGRESQL_PASSWORD'],
         'HOST': 'wps12th-ldh.cninfzt6utzi.ap-northeast-2.rds.amazonaws.com',
         'PORT': 5432
     }
