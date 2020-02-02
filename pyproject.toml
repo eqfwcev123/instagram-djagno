@@ -6,8 +6,18 @@ authors = ["eqfwcev123 <dohyeonee95@hotmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
+django = "<3"
+boto3 = "^1.11.9"
+django-extensions = "^2.2.6"
+django-secrets-manager = "^0.1.10"
+django-storages = "^1.8"
+Pillow = "^7.0.0"
+psycopg2-binary = "^2.8.4"
+requests = "^2.22.0"
+gunicorn = "^20.0.4"
 
 [tool.poetry.dev-dependencies]
+notebook = "^6.0.3"
 
 [build-system]
 requires = ["poetry>=0.12"]
