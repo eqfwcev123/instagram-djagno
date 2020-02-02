@@ -11,19 +11,23 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 import json
 import os
-
-import boto3
 from django_secrets import SECRETS
 
+import boto3
+
+"""
+AWS SECRETS
+"""
+# 환경변수
 access_key = os.environ.get('AWS_SECRETS_MANAGER_ACCESS_KEY_ID')
 secret_key = os.environ.get('AWS_SECRETS_MANAGER_SECRET_ACCESS_KEY')
-
 region_name = 'ap-northeast-2'
 
 session_kwargs = {
     'region_name': region_name
 }
 
+#### access_key 와 secret_key가 환경 변수에 존재할 경우
 if access_key and secret_key:
     session_kwargs['aws_access_key_id'] = access_key
     session_kwargs['aws_secret_access_key'] = secret_key
@@ -39,25 +43,31 @@ secret_string = client.get_secret_value(SecretId='wps')['SecretString']
 secret_data = json.loads(secret_string)  # 파이썬 딕셔너리로 변환
 SECRETS = secret_data['instagram']
 
-
 # AWS_SECRETS_MANAGER_SECRETS_NAME = 'wps'
 # AWS_SECRETS_MANAGER_SECRETS_SECTION = 'instagram'
 # AWS_SECRETS_MANAGER_REGION_NAME = 'ap-northeast-2'
 # AWS_SECRETS_MANAGER_PROFILE = 'wps-secrets-manager'
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+"""
+아마존 S3 사용
+"""
+
+# Boto3 와 S3 사용
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'  # 미디어/정적파일을 S3에 올리게 하기 설정
+AWS_ACCESS_KEY_ID = SECRETS['AWS_ACCESS_KEY_ID']  # Boto3를 사용하기 위한 인증
+AWS_SECRET_ACCESS_KEY = SECRETS['AWS_SECRET_ACCESS_KEY']  # Boto3를 사용하기 위한 인증
+AWS_STORAGE_BUCKET_NAME = "wps-instagram-ldh2"  # 미디어/정적파일을 S3에 올리게 하기 설정
+AWS_AUTO_CREATE_BUCKET = True  # True일 경우 AWS_STORAGE_BUCKET_NAME 에 지정되어 있는 bucket을 자동 생성한다
+AWS_S3_REGION_NAME = "ap-northeast-2"
+
+"""
+경로 설정
+"""
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
 STATIC_URL = '/static/'
-# BASEDIR 는 Config 이다
 # os.path.dirname()은 한단계 위로 올라간다고 생각하면 된다.
 ROOT_DIR = os.path.dirname(BASE_DIR)
-# ROOT_ROOT_DIR = os.path.dirname(ROOT_DIR)
-# print('베이스 경로는: ', BASE_DIR)
-# print('루트경로는 : ', ROOT_DIR)
-# print('루트루트 경로는 : ', ROOT_ROOT_DIR)
 # instagram/.media/
 MEDIA_ROOT = os.path.join(ROOT_DIR, '.media')
 MEDIA_URL = '/media/'
@@ -79,24 +89,6 @@ ALLOWED_HOSTS = [
     '15.164.228.223'
 ]
 AUTH_USER_MODEL = 'members.User'
-
-# JSON_FILE = os.path.join(ROOT_DIR, 'secrets.json')
-# # print('제이슨 파일: ', JSON_FILE)
-# JSON_DATA = open(JSON_FILE)
-# # print('제이슨 데이터:', JSON_DATA)
-# # print('제이슽 데이터 타입 :', type(JSON_DATA))
-# JSON_DATA_OBJECT = json.load(JSON_DATA)  # 딕셔너리형 데이터를 가지고 온다
-# JSON_DATA_STRING = json.dumps(JSON_DATA_OBJECT)  # 문자열 형 데이터를 가지고 온다
-# # JSON_DATA_STRING = JSON_DATA.dumps(JSON_FILE)
-
-
-# Boto3 와 S3Boto3Storage 사용
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'  # 미디어/정적파일을 S3에 올리게 하기 설정
-AWS_ACCESS_KEY_ID = SECRETS['AWS_ACCESS_KEY_ID']  # Boto3를 사용하기 위한 인증
-AWS_SECRET_ACCESS_KEY = SECRETS['AWS_SECRET_ACCESS_KEY']  # Boto3를 사용하기 위한 인증
-AWS_STORAGE_BUCKET_NAME = "wps-instagram-ldh2"  # 미디어/정적파일을 S3에 올리게 하기 설정
-AWS_AUTO_CREATE_BUCKET = True  # True일 경우 AWS_STORAGE_BUCKET_NAME 에 지정되어 있는 bucket을 자동 생성한다
-AWS_S3_REGION_NAME = "ap-northeast-2"
 
 # Application definition
 
@@ -143,7 +135,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'config.wsgi.application'
 
 # Database
-# https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
     'default': {
