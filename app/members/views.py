@@ -1,11 +1,9 @@
-import json
-import os
-
 import requests
 from django.contrib.auth import login, logout
 from django.shortcuts import render, redirect
+from django_secrets import SECRETS
 
-from config.settings import ROOT_DIR, secrets
+from config.settings import ROOT_DIR
 from members.forms import SignupForm, LoginForm
 from members.models import User
 
@@ -31,7 +29,7 @@ def login_view(request):
     login_base_url = 'https://nid.naver.com/oauth2.0/authorize'
     login_params = {
         'response_type': 'code',
-        'client_id': secrets["NAVER_CLIENT_ID"],
+        'client_id': SECRETS["NAVER_CLIENT_ID"],
         'redirect_url': 'http://localhost:8000/members/naver-login/',
         'state': 'RANDOM_STATE',
     }
@@ -80,8 +78,8 @@ def naver_login(request):
     login_base_url = "https://nid.naver.com/oauth2.0/token"
     login_params = {
         'grant_type': 'authorization_code',
-        'client_id': secrets["NAVER_CLIENT_ID"],
-        'client_secret': secrets["NAVER_CLIENT_SECRET"],
+        'client_id': SECRETS["NAVER_CLIENT_ID"],
+        'client_secret': SECRETS["NAVER_CLIENT_SECRET"],
         'redirect_url': 'http://localhost:8000/members/naver-login/',
         'code': request.GET['code'],
         'state': request.GET['state'],
