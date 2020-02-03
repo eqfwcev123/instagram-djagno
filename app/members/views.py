@@ -1,18 +1,10 @@
 import requests
 from django.contrib.auth import login, logout
 from django.shortcuts import render, redirect
-from django_secrets import SECRETS
 
-from config.settings import ROOT_DIR
+from config.settings import ROOT_DIR, SECRETS
 from members.forms import SignupForm, LoginForm
 from members.models import User
-
-# Create your views here.
-
-
-# JSON_FILE = os.path.join(ROOT_DIR, 'secrets.json')
-# JSON_DATA = open(JSON_FILE)
-# JSON_DATA_OBJECT = json.load(JSON_DATA)
 
 
 def login_view(request):
