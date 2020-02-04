@@ -15,7 +15,7 @@ import os
 import boto3
 
 """
-AWS SECRETS
+AWS boto3 사용
 """
 # 환경변수
 access_key = os.environ.get('AWS_SECRETS_MANAGER_ACCESS_KEY_ID')
@@ -26,11 +26,14 @@ session_kwargs = {
     'region_name': region_name
 }
 
-#### access_key 와 secret_key가 환경 변수에 존재할 경우
+# boto3 는 credential을 찾을 때 환경변수를 먼저 찾고, 만약에 없으면 credentials 파일을 사용한다.
+# access_key 와 secret_key가 환경 변수에 존재할 경우
 if access_key and secret_key:
+    # 환경 변수가 존재할 경우
     session_kwargs['aws_access_key_id'] = access_key
     session_kwargs['aws_secret_access_key'] = secret_key
 else:
+    # 환경 변수가 존재하지 않을 경우
     session_kwargs['profile_name'] = 'wps-secrets-manager'
 session = boto3.session.Session(**session_kwargs)
 
@@ -42,11 +45,14 @@ secret_string = client.get_secret_value(SecretId='fastcp')['SecretString']
 secret_data = json.loads(secret_string)  # 파이썬 딕셔너리로 변환
 SECRETS = secret_data['instagram']
 
+"""
+django-secrets-manager 사용
+"""
+
 AWS_SECRETS_MANAGER_SECRETS_NAME = 'wps12'
 AWS_SECRETS_MANAGER_SECRETS_SECTION = 'instagram'
 AWS_SECRETS_MANAGER_REGION_NAME = 'ap-northeast-2'
 AWS_SECRETS_MANAGER_PROFILE = 'wps-secrets-manager'
-
 
 """
 아마존 S3 사용
