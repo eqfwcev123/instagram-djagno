@@ -1,0 +1,18 @@
+server {
+    # 80번 포트로 온 요청에 응답할 블록이다
+    listen 80;
+
+    # HTTP 요청의 Host값(URL에 입력한 도메인)
+    server_name localhost;
+
+    # 인코딩 설정
+    charset utf-8;
+
+    # root로부터의 요청에 대해 응답할 블록
+    location / {
+        # 이쪽으로 url이 접근하면 nginx는 이 url에 맞는 정적 페이지를 돌려준다.
+        # proxy_pass proxy:요청을 다른곳으로 전달
+        # /run/gunicorn.sock파일을 사용해서 gunicorn과 소켓통신 하는 proxy구성
+        proxy_pass  http://unix:/run/instagram.sock;
+    }
+}
