@@ -3,6 +3,7 @@ import subprocess
 
 import boto3
 
+DOCKER_IMAGE_TAG = 'eqfwcev123/docker-wps12'
 session = boto3.session.Session(profile_name='wps-secrets-manager')
 credentials = session.get_credentials()
 print(' ====== credentials 는 ====== ', credentials)
@@ -58,7 +59,13 @@ subprocess.run('docker run {options} eqfwcev123/docker-wps12'.format(
         f'{key} {value}' for key, value in DOCKER_OPTIONS
     ])
 ), shell=True)
-
+subprocess.run(f'docker cp secrets.json instagram:/srv/instagram')
+subprocess.run('docker exec -it instagram /bin/bash'.format(
+    options=' '.join([
+        f'{key} {value}' for key, value in DOCKER_OPTIONS
+    ]),
+    tag=DOCKER_IMAGE_TAG
+), shell=True)
 
 # 위에 있는 코드들은 다음과 같다
 # docker run --rm -it -p 8001:8000 --name instagram \
