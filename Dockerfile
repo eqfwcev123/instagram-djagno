@@ -4,6 +4,7 @@
 FROM    python:3.7-slim
 
 RUN     apt -y update && apt -y dist-upgrade && apt -y autoremove
+RUN     apt -y install nginx
 
 # The /tmp directory in linux is whre temporary files and directories
 # are created by applications. /tmp directory is cleaned up only at the time
@@ -16,5 +17,6 @@ RUN     pip install -r /tmp/requirements.txt
 # 소스코드 복사후 runserver
 COPY    . /srv/instagram
 WORKDIR /srv/instagram/app
-CMD     python manage.py runserver 0:8000
 
+
+RUN     cp /srv/instagram/.config/instagram.nginx /etc/nginx/sites-enabled/
