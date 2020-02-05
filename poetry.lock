@@ -664,6 +664,17 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "0.3.0"
 
 [[package]]
+category = "main"
+description = "A system for controlling process state under UNIX"
+name = "supervisor"
+optional = false
+python-versions = "*"
+version = "4.1.0"
+
+[package.extras]
+testing = ["mock", "pytest", "pytest-cov"]
+
+[[package]]
 category = "dev"
 description = "Terminals served to xterm.js using Tornado websockets"
 name = "terminado"
@@ -754,7 +765,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools"]
 
 [metadata]
-content-hash = "8f6b0bab7cc2fe32a66b11541b7fe650f9d3201d05c94a890369f361855e11f5"
+content-hash = "f231ef393e74f3ab8cc7505ce33c26062f8db3c7f5c726b1a9615402b81cba47"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -1100,6 +1111,10 @@ six = [
 sqlparse = [
     {file = "sqlparse-0.3.0-py2.py3-none-any.whl", hash = "sha256:40afe6b8d4b1117e7dff5504d7a8ce07d9a1b15aeeade8a2d10f130a834f8177"},
     {file = "sqlparse-0.3.0.tar.gz", hash = "sha256:7c3dca29c022744e95b547e867cee89f4fce4373f3549ccd8797d8eb52cdb873"},
+]
+supervisor = [
+    {file = "supervisor-4.1.0-py2.py3-none-any.whl", hash = "sha256:a76b2f77a560f2dc411c0254a4eb15f555e99faac48621b0f1fc9ab013944f47"},
+    {file = "supervisor-4.1.0.tar.gz", hash = "sha256:2dc86fe0476e945e61483d614ceb2cf4f93b95282eb243bdf792621994360383"},
 ]
 terminado = [
     {file = "terminado-0.8.3-py2.py3-none-any.whl", hash = "sha256:a43dcb3e353bc680dd0783b1d9c3fc28d529f190bc54ba9a229f72fe6e7a54d7"},
