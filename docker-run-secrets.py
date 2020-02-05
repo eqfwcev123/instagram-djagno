@@ -2,6 +2,13 @@
 # 시크릿이 들어간 도커 컨테이너 실행(로컬)
 import subprocess
 
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("cmd", type=str, nargs=argparse.REMAINDER)
+args = parser.parse_args()
+
+
 DOCKER_OPTIONS = [
     ('--rm', ''),
     ('-it', ''),
@@ -29,10 +36,14 @@ subprocess.run('docker run {options} {tag} /bin/bash'.format(
     tag=DOCKER_IMAGE_TAG,
 ), shell=True)
 
-# 실행중인 도커 컴퓨터에 secrets.json을 전송
+# 실행중인 도커 컴퓨터에 secrets.json을 전송. 경로는 instagram 이미지 내부의 /srv/instagram 디렉토리
 subprocess.run('docker cp secrets.json instagram:/srv/instagram', shell=True)
 
-# 다시 /bin/bash를 실행 시켜준다
-subprocess.run('docker exec -it instagram /bin/bash', shell=True)
+# collectstatic 을 subproces.run 을 이용해서 자동 실행 시키기
+subprocess.run('docker exec -it instagram ./manage.py collectstatic',shell=True)
 
-# 그다음에 gunicorn으로 연결을 해준다.
+# 실행중인 name=instagram 인 컨테이너에서 argparse로 입력받은 cmd또는 bash를 실행(foreground 모드)
+subprocess.run('docker exec -it instagram {cmd}'.format(
+    cmd=' '.join(args.cmd) if args.cmd else '/bin/bash'
+), shell=True)
+
