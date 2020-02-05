@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 # 시크릿이 들어간 도커 컨테이너 실행(로컬)
-import subprocess
-
 import argparse
+import subprocess
 
 parser = argparse.ArgumentParser()
 parser.add_argument("cmd", type=str, nargs=argparse.REMAINDER)
 args = parser.parse_args()
-
 
 DOCKER_OPTIONS = [
     ('--rm', ''),
@@ -40,10 +38,9 @@ subprocess.run('docker run {options} {tag} /bin/bash'.format(
 subprocess.run('docker cp secrets.json instagram:/srv/instagram', shell=True)
 
 # collectstatic 을 subproces.run 을 이용해서 자동 실행 시키기
-subprocess.run('docker exec -it instagram ./manage.py collectstatic',shell=True)
+subprocess.run('docker exec -it instagram ./manage.py collectstatic', shell=True)
 
 # 실행중인 name=instagram 인 컨테이너에서 argparse로 입력받은 cmd또는 bash를 실행(foreground 모드)
 subprocess.run('docker exec -it instagram {cmd}'.format(
-    cmd=' '.join(args.cmd) if args.cmd else '/bin/bash'
+    cmd=' '.join(args.cmd) if args.cmd else 'supervisord -c ../.config/supervisord.conf -n'
 ), shell=True)
-
