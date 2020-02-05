@@ -19,10 +19,14 @@ RUN     pip install -r /tmp/requirements.txt
 COPY    . /srv/instagram
 WORKDIR /srv/instagram/app
 
-
+# welcome to nginx 파일이다
+RUN     rm /etc/nginx/sites-enabled/default
 RUN     cp /srv/instagram/.config/instagram.nginx /etc/nginx/sites-enabled/
 
 # --noinput 은 yes/no 선택이 있을때 무조건 yes 를 한다는 뜻이다.
 # secrets.json이 없기 때문에 지금 할 수 없다.
 # docker run일 때 사용할 수 있슴
 # RUN     python manage.py collectstatic --noinput
+RUN     mkdir /var/log/gunicorn
+
+CMD     /bin/bash
