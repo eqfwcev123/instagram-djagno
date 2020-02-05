@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import argparse
 import os
 import subprocess
 from pathlib import Path
@@ -9,12 +10,16 @@ from pathlib import Path
 # 4.Container에서 runserver
 
 
+parser = argparse.ArgumentParser()
+parser.add_argument("cmd", type=str, nargs=argparse.REMAINDER)
+args = parser.parse_args()
+
 DOCKER_OPTIONS = [
     ('--rm', ''),
     ('-it', ''),
     # 백그라운드로 실행하는 옵션 추가: 다른 터미널에서 프로세스를 돌리고 있다고 생각하면 된다.
     ('-d', ''),
-    ('-p', '80:8000'),
+    ('-p', '80:80'),
     ('--name', 'instagram'),
 ]
 
@@ -44,6 +49,7 @@ def ssh_run(cmd, ignore_error=False):
 
 # 1. 호스트에서 도커 이미지 build, push
 def local_build_push():
+    run(f'poetry export -f requirements.txt > requirements.txt')
     run(f'docker build -t {DOCKER_IMAGE_TAG} .')
     run(f'docker push {DOCKER_IMAGE_TAG}')
 
@@ -74,9 +80,12 @@ def copy_secrets():
 
 
 # 4.Container에서 runserver
-def server_runserver():
+def server_cmd():
+    # 실행중인 nginx 종료
+    ssh_run(f'sudo docker exec instagram /usr/sbin/nginx -s stop', ignore_error=True)
+    ssh_run(f'sudo docker exec instagram python manage.py collectstatic --noinput')
     ssh_run(f'sudo docker exec -it -d instagram '
-            f'python /srv/instagram/app/manage.py runserver 0:8000')
+            f'supervisord -c /srv/instagram/.config/supervisord.conf -n')
 
 
 # __name__ 은 자기 모듈의 이름을 가리킨다.
@@ -86,7 +95,7 @@ if __name__ == '__main__':
         server_init()
         server_pull_run()
         copy_secrets()
-        server_runserver()
+        server_cmd()
     except subprocess.CalledProcessError as e:
         print('deploy-docker-secrets-error')
         print(' cmd: ', e.cmd)
@@ -94,7 +103,6 @@ if __name__ == '__main__':
         print(' output: ', e.output)
         print(' stdout: ', e.stdout)
         print(' stderr: ', e.stderr)
-
 
 # 1. 로컬
 # - 도커이미지 build
