@@ -4,6 +4,7 @@
 FROM    python:3.7-slim
 
 RUN     apt -y update && apt -y dist-upgrade && apt -y autoremove
+RUN     apt-get install vim -y
 RUN     apt -y install nginx
 
 # The /tmp directory in linux is whre temporary files and directories
