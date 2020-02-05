@@ -28,6 +28,9 @@ urlpatterns = [
     path('explore/tags/<str:tag>/', post_list_by_tag, name='post-list-by-tag')
 ]
 
+# 이부분은 runserver 에서만 가능.
+# staticfile
+
 urlpatterns += static(
     # URL 앞부분이 /media/ 이면
     prefix=settings.MEDIA_URL,
