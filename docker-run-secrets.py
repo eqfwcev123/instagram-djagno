@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# 시크릿이 들어간 도커 컨테이너 실행(로컬)
 import subprocess
 
 DOCKER_OPTIONS = [
@@ -11,9 +12,12 @@ DOCKER_OPTIONS = [
 
 DOCKER_IMAGE_TAG = 'eqfwcev123/docker-wps12'
 
-# 도커 컴퓨터 생성
+# poetry export로 docker build시 사용할 requirements.txt 작성
+subprocess.run(f'poetry export -f requirements.txt > requirements.txt', shell=True)
+
+# 도커 컴퓨터 생성(Secrets.json 이 없는 이미지를 build)
 subprocess.run(f'docker build -t {DOCKER_IMAGE_TAG} -f Dockerfile .', shell=True)
-# 기존에 실행중인 컨테이너 실행 중지
+# 기존에 실행중인 name=instagram인 컨테이너 실행 중지
 subprocess.run(f'docker stop instagram', shell=True)
 
 # secrets.json이 없는 상태로 docker run으로 bash를 실행 -> background로 들어감
