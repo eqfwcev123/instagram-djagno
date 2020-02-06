@@ -3,21 +3,49 @@ server {
     listen 80;
 
     # HTTP 요청의 Host값(URL에 입력한 도메인)
-    server_name default_server;
+    server_name www.wps-eqfwcev123.xyz wps-eqfwcev123.xyz;
 
     # 인코딩 설정
     charset utf-8;
 
-    # root로부터의 요청에 대해 응답할 블록
-    # http://localhost
+    location / {
+        # 301은 redirect를 의미한다.
+        return 301 http://$host$request_uri;
+    }
+
+    # 여기로 접근하면 특정 비번을 돌려달라
+    location /.well-known/acme-challenge/ {
+        alias           /srv/instagram/.cert/;
+    }
+
+
+
+}
+
+# https 요청. (https 는 ssl 사용)
+# 우리는 https로 통신을 해야 하기 때문에 누가 htttp(80번 포트)로 들어오면
+# redirect 를 해서 htttps(443)으로 오라고 지시한다.
+# 443으로 돌아오면 이제 응답을 해서
+server {
+    listen      443 ssl;
+    server_name www.wps-eqfwcev123.xyz wps-eqfwcev123.xyz;
+    charset utf-8;
+
+    ssl on;
+    # cert.pem 인증서 파일
+    # chain.pem 인증서 발급 파일
+    ssl_certificate     /etc/letsencrypt/live/wps-eqfwcev123.xyz/fullchain.pem; # cert.pem 이랑 chain.pem을 합쳐놓은 파일
+    ssl_certificate     /etc/letsencrypt/live/wps-eqfwcev123.xyz/privkey.pem; # 인증 암호를 해독하는 개인키
+
+
     location / {
         # 이쪽으로 url이 접근하면 nginx는 이 url에 맞는 정적 페이지를 돌려준다.
         # proxy_pass proxy:요청을 다른곳으로 전달
         # /run/gunicorn.sock파일을 사용해서 gunicorn과 소켓통신 하는 proxy구성
-        proxy_pass  http://unix:/run/instagram.sock;
+        include         /etc/nginx/proxy_params;
+        proxy_pass      http://unix:/run/instagram.sock;
     }
-
-    # http://localhost/static/
+        # http://localhost/static/
     location /static/ {
         alias       /srv/instagram/.static/;
     }
