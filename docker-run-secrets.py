@@ -3,8 +3,21 @@
 import argparse
 import subprocess
 
+# argparser 사용방법
+# 1. argparser 객체 생성하기 ----> parser = argparser.ArgumentParser()
+# 2. argument 추가하기 ----> parser.add_argument()
+
+# ArgumentParser 객체 생성
 parser = argparse.ArgumentParser()
-parser.add_argument("cmd", type=str, nargs=argparse.REMAINDER)
+
+# 각 cli 인자가 어떻게 파싱될지 지정
+parser.add_argument(
+    "cmd",
+    type=str,  # 사용자가 입력한 CLI(기본으로 문자열)을 타입 케스팅 해준다.
+    nargs=argparse.REMAINDER  # arguments 의 개수. 총 몇개의 argument 를 사용자가 지정할지 말해준다.
+)
+
+# add_argument 로 지정한 내용을 적용
 args = parser.parse_args()
 
 DOCKER_OPTIONS = [
