@@ -20,10 +20,10 @@ DOCKER_OPTIONS = [
     # 백그라운드로 실행하는 옵션 추가: 다른 터미널에서 프로세스를 돌리고 있다고 생각하면 된다.
     ('-d', ''),
     ('-p', '80:80'),
-    # ('-p', '443:443'),
+    ('-p', '443:443'),
     ('--name', 'instagram'),
     # EC2 컴퓨터의 /etc/letsencrypt 랑 컨테이너 내부의 /etc/letsencrypt 를 동일화 한다.
-    # ('-v', '/etc/letsencrypt:/etc/letsencrypt')
+    ('-v', '/etc/letsencrypt:/etc/letsencrypt')
 ]
 
 USER = 'ubuntu'
