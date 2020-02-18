@@ -17,15 +17,23 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
+
 from members.views import signup_view
 from posts.views import post_list_by_tag
+
+# localhost:8000/api/ --> 이쪽으로 오는 경우 APIView를 사용
+urlpatterns_apis = [
+    path('members/', include('members.urls.apis')),
+    path('posts/', include('posts.urls.apis'))
+]
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', signup_view, name='signup'),
-    path('members/', include('members.urls')),
-    path('posts/', include('posts.urls')),
-    path('explore/tags/<str:tag>/', post_list_by_tag, name='post-list-by-tag')
+    path('members/', include('members.urls.views')),
+    path('posts/', include('posts.urls.views')),
+    path('explore/tags/<str:tag>/', post_list_by_tag, name='post-list-by-tag'),
+    path('api/', include(urlpatterns_apis))
 ]
 
 # 이부분은 runserver 에서만 가능.
