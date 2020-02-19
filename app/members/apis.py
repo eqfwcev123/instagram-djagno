@@ -16,7 +16,6 @@ class AuthTokenAPIView(APIView):
         # print('유저네임이 json 데이터인지 확인하기',checker)
         password = request.data['password']  # 사용자가 계정으로 로그인.(string)
         user = authenticate(username=username, password=password)  # 유효한 사용자인지 검사
-        print(type(user))
         if user:
             token, _ = Token.objects.get_or_create(user=user)  # 유효할 경우 사용자에게 토큰 제공
         else:
