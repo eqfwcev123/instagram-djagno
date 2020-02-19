@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 
 # Create your views here.
 from posts.forms import PostCreateForm, PostCommentCreateForm
-from posts.models import Post, PostLike, PostImage, PostComment
+from posts.models import Post, PostLike, PostImage
 
 
 def post_list(request, tag=None):
@@ -73,3 +73,12 @@ def comment_create(request, post_pk):
             # 위 코드와 동일
             form.save(post=post, author=user)
         return redirect('posts:post-list')
+
+
+def comment_list(request, post_pk):
+    post = Post.objects.get(pk=post_pk)
+    comments = post.postcomment_set.all()
+    context = {
+        'comments': comments
+    }
+    return render(request, 'posts/comment-list.html', context)
