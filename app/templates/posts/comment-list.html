@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div>
+    <h3>출력</h3>
+    {% for comment in comments %}
+    <div>
+        <div>{{ comment.pk }}</div>
+        <div>{{ comment.content }}</div>
+        <div>{{ comment.author }}</div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+
+
+
+
+
+
