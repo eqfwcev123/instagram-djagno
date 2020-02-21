@@ -13,10 +13,13 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+import debug_toolbar
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
+from drf_yasg import openapi
+from drf_yasg.views import get_schema_view
 
 from members.views import signup_view
 from posts.views import post_list_by_tag
@@ -27,7 +30,18 @@ urlpatterns_apis = [
     path('posts/', include('posts.urls.apis'))
 ]
 
+schema_view = get_schema_view(
+    openapi.Info(
+        title='WPS Instagram API',
+        default_version='v1',
+        contact=openapi.Contact(email="dohyeonee95@hotmail.com")
+    ),
+    public=True,
+)
+
 urlpatterns = [
+    path('__debug__/', include(debug_toolbar.urls)),
+    path('doc/', schema_view.with_ui('redoc', cache_timeout=0)),
     path('admin/', admin.site.urls),
     path('', signup_view, name='signup'),
     path('members/', include('members.urls.views')),
